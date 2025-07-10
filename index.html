@@ -33,6 +33,7 @@
       padding: 10px;
       margin-top: 20px;
       display: none;
+      background-color: #f9f9f9;
     }
   </style>
 </head>
@@ -40,8 +41,8 @@
 
   <h2>Contact Us</h2>
 
-  <!-- Simulated POST form (validated before submission) -->
-  <form id="contactForm" method="POST" action="#" onsubmit="return validateForm()">
+  <!-- POST Form -->
+  <form id="contactForm" method="POST" action="#" onsubmit="return validateForm();">
     
     <label>Name:
       <input type="text" id="name" name="name">
@@ -80,11 +81,11 @@
     </label>
 
     <br><br>
-    <input type="submit" value="Submit (Simulated POST)">
+    <input type="submit" value="Submit (POST)">
     <input type="button" value="Preview (GET)" onclick="previewForm()">
   </form>
 
-  <!-- Preview shown here using GET -->
+  <!-- GET-style Preview Box -->
   <div id="previewBox">
     <h3>Preview:</h3>
     <p><strong>Name:</strong> <span id="previewName"></span></p>
@@ -96,7 +97,7 @@
   </div>
 
   <script>
-    function validateForm() {
+    function validateForm(showErrorsOnly = true) {
       let valid = true;
       document.querySelectorAll('.error').forEach(e => e.textContent = '');
 
@@ -131,19 +132,18 @@
         valid = false;
       }
 
-      // If valid, simulate form submission without server
-      if (valid) {
-        alert("✅ Form submitted successfully (simulated POST).");
-        document.getElementById("contactForm").reset();
-        document.getElementById("previewBox").style.display = "none";
-      }
-
-      return false; // Prevent real POST to server
+      return valid;
     }
 
     function previewForm() {
-      if (!validateForm()) return;
+      const isValid = validateForm();
 
+      if (!isValid) {
+        document.getElementById("previewBox").style.display = "none";
+        return;
+      }
+
+      // Fill preview data
       document.getElementById("previewName").textContent = document.getElementById("name").value;
       document.getElementById("previewEmail").textContent = document.getElementById("email").value;
       document.getElementById("previewPhone").textContent = document.getElementById("phone").value;
@@ -166,4 +166,5 @@
 
 </body>
 </html>
+
 
