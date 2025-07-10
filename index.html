@@ -3,76 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <title>Contact Us</title>
+
+  <!-- CSS Styling to make the form look clean and readable -->
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
+
     label {
       display: block;
       margin-top: 10px;
     }
-    input[type="text"], input[type="email"], textarea, select {
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
     }
+
     .radio-group {
       margin-top: 10px;
     }
+
     .radio-group label {
       display: inline-block;
       margin-right: 10px;
     }
+
     .error {
       color: red;
       font-size: 0.9em;
     }
+
     #previewBox {
       border: 1px solid #ccc;
       padding: 10px;
       margin-top: 20px;
-      display: none;
+      display: none; /* Hidden until user clicks Preview */
       background-color: #f9f9f9;
     }
   </style>
 </head>
+
 <body>
 
   <h2>Contact Us</h2>
 
-  <!-- POST Form -->
-  <form id="contactForm" method="POST" action="#" onsubmit="return validateForm();">
-    
-    <label>Name:
-      <input type="text" id="name" name="name">
+  <!-- ✅ The Main Form
+       - Uses POST method to send data to Formspree backend
+       - JavaScript handles validation
+  -->
+  <form
+    id="contactForm"
+    method="POST"
+    action="https://formspree.io/f/xdkzqaqe"
+    onsubmit="return validateForm();"
+  >
+
+    <!-- Text Input: Name -->
+    <label>
+      Name:
+      <input type="text" id="name" name="name" required>
       <span class="error" id="errorName"></span>
     </label>
 
-    <label>Email:
-      <input type="email" id="email" name="email">
+    <!-- Text Input: Email (with built-in and JS validation) -->
+    <label>
+      Email:
+      <input type="email" id="email" name="email" required>
       <span class="error" id="errorEmail"></span>
     </label>
 
-    <label>Phone Number:
-      <input type="text" id="phone" name="phone">
+    <!-- Text Input: Phone number (only 10 digits allowed) -->
+    <label>
+      Phone Number:
+      <input type="text" id="phone" name="phone" required>
       <span class="error" id="errorPhone"></span>
     </label>
 
-    <label>Message:
-      <textarea id="message" name="message" rows="4"></textarea>
+    <!-- Textarea Input: Message -->
+    <label>
+      Message:
+      <textarea id="message" name="message" rows="4" required></textarea>
       <span class="error" id="errorMessage"></span>
     </label>
 
+    <!-- Radio Button Group: Preferred Contact Method -->
     <div class="radio-group">
       Preferred Contact Method:
-      <label><input type="radio" name="contact" value="Email"> Email</label>
+      <label><input type="radio" name="contact" value="Email" required> Email</label>
       <label><input type="radio" name="contact" value="Phone"> Phone</label>
       <label><input type="radio" name="contact" value="Both"> Both</label>
     </div>
 
-    <label>Inquiry Type:
-      <select name="inquiry" id="inquiry">
+    <!-- Dropdown Menu: Inquiry Type -->
+    <label>
+      Inquiry Type:
+      <select name="inquiry" id="inquiry" required>
         <option value="">Select an option</option>
         <option value="General Inquiry">General Inquiry</option>
         <option value="Support Request">Support Request</option>
@@ -81,11 +112,15 @@
     </label>
 
     <br><br>
+
+    <!-- Button to trigger the JavaScript preview (uses GET-like display) -->
+    <button type="button" onclick="previewForm()">Preview (GET)</button>
+
+    <!-- Submit button sends the data to Formspree via POST -->
     <input type="submit" value="Submit (POST)">
-    <input type="button" value="Preview (GET)" onclick="previewForm()">
   </form>
 
-  <!-- GET-style Preview Box -->
+  <!-- 🔍 Live Preview Section: Updated by JavaScript when user clicks Preview -->
   <div id="previewBox">
     <h3>Preview:</h3>
     <p><strong>Name:</strong> <span id="previewName"></span></p>
@@ -96,21 +131,27 @@
     <p><strong>Inquiry Type:</strong> <span id="previewInquiry"></span></p>
   </div>
 
+  <!-- ✅ JavaScript Section: Handles validation and preview functionality -->
   <script>
-    function validateForm(showErrorsOnly = true) {
-      let valid = true;
+    // Function that validates all the form fields before submission
+    function validateForm() {
+      // Clear all previous error messages
       document.querySelectorAll('.error').forEach(e => e.textContent = '');
+      let valid = true;
 
+      // Fetch values from form
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const message = document.getElementById("message").value.trim();
 
+      // Validate name
       if (name === "") {
         document.getElementById("errorName").textContent = "Name is required.";
         valid = false;
       }
 
+      // Validate email presence and format using regex
       if (email === "") {
         document.getElementById("errorEmail").textContent = "Email is required.";
         valid = false;
@@ -119,47 +160,52 @@
         valid = false;
       }
 
+      // Validate phone: only allow 10 digits
       if (phone === "") {
         document.getElementById("errorPhone").textContent = "Phone number is required.";
         valid = false;
       } else if (!/^\d{10}$/.test(phone)) {
-        document.getElementById("errorPhone").textContent = "Phone number must be 10 digits.";
+        document.getElementById("errorPhone").textContent = "Phone must be 10 digits.";
         valid = false;
       }
 
+      // Validate message
       if (message === "") {
         document.getElementById("errorMessage").textContent = "Message is required.";
         valid = false;
       }
 
+      // Return true if all validations passed → Form will submit to Formspree
       return valid;
     }
 
+    // Function to preview form inputs without submitting (simulates GET-like behavior)
     function previewForm() {
-      const isValid = validateForm();
-
-      if (!isValid) {
+      // Validate inputs first; don't preview if data is invalid
+      if (!validateForm()) {
         document.getElementById("previewBox").style.display = "none";
         return;
       }
 
-      // Fill preview data
+      // Fill preview section with current input values
       document.getElementById("previewName").textContent = document.getElementById("name").value;
       document.getElementById("previewEmail").textContent = document.getElementById("email").value;
       document.getElementById("previewPhone").textContent = document.getElementById("phone").value;
       document.getElementById("previewMessage").textContent = document.getElementById("message").value;
       document.getElementById("previewInquiry").textContent = document.getElementById("inquiry").value;
 
-      const contactMethods = document.getElementsByName("contact");
-      let selectedMethod = "";
-      for (const method of contactMethods) {
-        if (method.checked) {
-          selectedMethod = method.value;
+      // Determine which contact method was selected
+      const contactRadios = document.getElementsByName("contact");
+      let selectedContact = "";
+      for (const radio of contactRadios) {
+        if (radio.checked) {
+          selectedContact = radio.value;
           break;
         }
       }
-      document.getElementById("previewContact").textContent = selectedMethod;
+      document.getElementById("previewContact").textContent = selectedContact;
 
+      // Make the preview section visible
       document.getElementById("previewBox").style.display = "block";
     }
   </script>
