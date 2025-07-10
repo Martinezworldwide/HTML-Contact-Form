@@ -39,7 +39,9 @@
 <body>
 
   <h2>Contact Us</h2>
-  <form id="contactForm" method="POST" action="submit_form.php" onsubmit="return validateForm()">
+
+  <!-- Simulated POST form (validated before submission) -->
+  <form id="contactForm" method="POST" action="#" onsubmit="return validateForm()">
     
     <label>Name:
       <input type="text" id="name" name="name">
@@ -77,10 +79,12 @@
       </select>
     </label>
 
-    <button type="button" onclick="previewForm()">Preview</button>
-    <input type="submit" value="Submit">
+    <br><br>
+    <input type="submit" value="Submit (Simulated POST)">
+    <input type="button" value="Preview (GET)" onclick="previewForm()">
   </form>
 
+  <!-- Preview shown here using GET -->
   <div id="previewBox">
     <h3>Preview:</h3>
     <p><strong>Name:</strong> <span id="previewName"></span></p>
@@ -127,7 +131,14 @@
         valid = false;
       }
 
-      return valid;
+      // If valid, simulate form submission without server
+      if (valid) {
+        alert("✅ Form submitted successfully (simulated POST).");
+        document.getElementById("contactForm").reset();
+        document.getElementById("previewBox").style.display = "none";
+      }
+
+      return false; // Prevent real POST to server
     }
 
     function previewForm() {
@@ -155,3 +166,4 @@
 
 </body>
 </html>
+
